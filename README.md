@@ -26,7 +26,7 @@ The simulation models:
 
 ## Requirements
 
-- Python 3.7 or higher
+- Python (3 or higher)
 - Flask
 - NumPy
 - Web browser with JavaScript enabled

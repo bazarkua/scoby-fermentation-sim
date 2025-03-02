@@ -4,6 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SCOBY Protection Simulation</title>
+    <!-- Add MathJax for LaTeX rendering -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
@@ -20,7 +23,7 @@
         }
         .header {
             text-align: center;
-            background-color: #46484F;
+            background-color: #2c3e56;
             color: white;
             padding: 20px;
             border-radius: 8px;
@@ -38,13 +41,13 @@
             padding: 10px 15px;
             border: none;
             border-radius: 4px;
-            background-color: #46484F;
+            background-color: #2c3e56;
             color: white;
             cursor: pointer;
             font-weight: bold;
         }
         button:hover {
-            background-color: #2a2c30;
+            background-color: #243245;
         }
         select {
             padding: 10px;
@@ -79,7 +82,7 @@
         .message-box {
             background-color: #f9f9f9;
             padding: 15px;
-            border-left: 4px solid #4a7c59;
+            border-left: 4px solid #2c3e56;
             margin-top: 20px;
             font-style: italic;
         }
@@ -137,7 +140,7 @@
             margin-top: 20px;
         }
         .explanation h3 {
-            color: #46484F;
+            color: #2c3e56;
         }
         .explanation ul {
             padding-left: 20px;
@@ -145,15 +148,77 @@
         .explanation li {
             margin-bottom: 10px;
         }
-        footer{
-            position: fixed;
-            padding: 16px;
-            left: 0;
-            bottom: 0;
-            width: 100%;
-            background-color: #46484F;
-            color: white;
+        
+        /* Mathematical explanations section styles */
+        .math-explanations {
+            background-color: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 40px;
+        }
+        .math-explanations h2 {
+            color: #2c3e56;
             text-align: center;
+            margin-bottom: 30px;
+        }
+        .equation-container {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #eee;
+        }
+        .equation-container h4 {
+            margin-bottom: 10px;
+            color: #333;
+        }
+        .equation-container p {
+            margin-top: 10px;
+            line-height: 1.6;
+        }
+                
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 40px;
+            background-color: #2c3e56;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            animation: bounce 2s infinite;
+            z-index: 100;
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+        .scroll-indicator:hover {
+            background-color: rgba(74, 124, 89, 0.9);
+        }
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateX(-50%) translateY(0);
+            }
+            40% {
+                transform: translateX(-50%) translateY(-10px);
+            }
+            60% {
+                transform: translateX(-50%) translateY(-5px);
+            }
+        }
+        
+        /* Footer styles */
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 40px;
+            border-radius: 8px;
+        }
+        footer p {
+            margin: 10px 0;
         }
     </style>
 </head>
@@ -209,7 +274,6 @@
                 <div class="visual-container">
                     <div class="liquid"></div>
                     <div id="scobyVisual" class="scoby-layer" style="height: 30px;"></div>
-                    <!-- Microbes will be dynamically added here -->
                     <div id="microbesContainer"></div>
                 </div>
             </div>
@@ -229,15 +293,168 @@
                 <li><strong>Oxygen Consumption:</strong> The SCOBY consumes oxygen, creating an anaerobic environment that inhibits aerobic contaminants like mold.</li>
             </ul>
         </div>
+        
+        <!-- Scroll indicator -->
+        <div class="scroll-indicator" id="scrollIndicator">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 5v14M19 12l-7 7-7-7"/>
+            </svg>
+        </div>
+        
+        <!-- Mathematical Explanations Section -->
+        <div class="math-explanations" id="mathematicalExplanations">
+            <h2>Mathematical Explanations</h2>
+            
+            <div class="equation-container">
+                <h4>SCOBY Growth (Logistic Growth)</h4>
+                <div>
+                    \[ \frac{dS}{dt} = r_s \cdot S \cdot (1 - \frac{S}{K}) \]
+                </div>
+                <p>
+                    Where \(S\) is the SCOBY size, \(r_s\) is the growth rate, and \(K\) is the carrying capacity. 
+                    This logistic equation models how the SCOBY grows over time, with growth slowing as the SCOBY approaches its carrying capacity.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>pH Decrease (Acid Production)</h4>
+                <div>
+                    \[ \frac{dpH}{dt} = -k_{pH} \cdot (S + B) \]
+                </div>
+                <p>
+                    The pH drops as acids are produced by the SCOBY (\(S\)) and bacteria (\(B\)), with \(k_{pH}\) as the rate constant.
+                    The pH is bounded by a minimum value, reflecting the biological constraints of acid production.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>Oxygen Consumption</h4>
+                <div>
+                    \[ \frac{dO_2}{dt} = -k_{O_2} \cdot (S + B + Y) \]
+                </div>
+                <p>
+                    Oxygen (\(O_2\)) is consumed by the SCOBY (\(S\)), bacteria (\(B\)), and yeast (\(Y\)) with rate constant \(k_{O_2}\).
+                    As oxygen decreases, the environment becomes less favorable for aerobic contaminants.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>Beneficial Bacteria Growth</h4>
+                <div>
+                    \[ \frac{dB}{dt} = r_b \cdot B \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \]
+                </div>
+                <p>
+                    Bacteria (\(B\)) grow at rate \(r_b\), modified by growth factors that depend on pH (\(g_{pH}\)) and oxygen (\(g_{O_2}\)).
+                    Beneficial bacteria typically thrive in low-pH environments and can tolerate lower oxygen levels.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>Beneficial Yeast Growth</h4>
+                <div>
+                    \[ \frac{dY}{dt} = r_y \cdot Y \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \]
+                </div>
+                <p>
+                    Yeast (\(Y\)) grows at rate \(r_y\), also modified by pH and oxygen-dependent growth factors.
+                    Yeasts have different optimal conditions compared to bacteria, creating a complex microbial ecosystem.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>Contaminant Growth</h4>
+                <div>
+                    \[ \frac{dC_i}{dt} = r_i \cdot C_i \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \cdot \frac{1}{1 + 0.1(B + Y)} \]
+                </div>
+                <p>
+                    Contaminant \(i\) grows at its intrinsic rate \(r_i\), modified by pH and oxygen factors, and competitive exclusion.
+                    The competitive exclusion factor \(\frac{1}{1 + 0.1(B + Y)}\) reduces contaminant growth as beneficial microbes increase.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>Physical Barrier (Contaminant Blocking Probability)</h4>
+                <div>
+                    \[ P_{block} = \frac{S}{S + S_{half}} \]
+                </div>
+                <p>
+                    The probability of the SCOBY blocking a contaminant increases with SCOBY size (\(S\)),
+                    where \(S_{half}\) is the SCOBY size at which the blocking probability is 50%.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>pH Growth Factor for Beneficial Organisms</h4>
+                <div>
+                    \[ g_{pH}(pH, threshold) = 
+                    \begin{cases} 
+                    1.0 & \text{if } pH \leq threshold \\
+                    \max(0.2, 1.0 - 0.3 \cdot (pH - threshold)) & \text{otherwise}
+                    \end{cases} \]
+                </div>
+                <p>
+                    For beneficial organisms, growth is optimal at lower pH levels below a threshold, 
+                    and decreases linearly as pH rises above that threshold.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>pH Growth Factor for Contaminants</h4>
+                <div>
+                    \[ g_{pH}(pH, threshold) = 
+                    \begin{cases} 
+                    0.2 & \text{if } pH \leq threshold \\
+                    \min(1.0, 0.2 + 0.8 \cdot \frac{pH - threshold}{7.0 - threshold}) & \text{otherwise}
+                    \end{cases} \]
+                </div>
+                <p>
+                    Contaminants generally prefer higher pH levels, with growth severely inhibited below a threshold.
+                    Growth increases as pH rises above the threshold, reaching optimal levels in more neutral conditions.
+                </p>
+            </div>
+        </div>
+        
+        <!-- Footer -->
+        <footer>
+            <p>Created by Adilbek Bazarkulov</p>
+            <p>Contact: <a href="mailto:bazarkua@oregonstate.edu">bazarkua@oregonstate.edu</a></p>
+            <p>Made for educational purposes (2025)</p>
+        </footer>
     </div>
-    <footer>
-        Made by Adilbek Bazarkulov in 2025 
-    </footer>
+   
 
     <script>
         // Initialize global variables
         let simulationState = null;
         let simulationChart = null;
+
+            // Setup scroll indicator behavior
+        function setupScrollIndicator() {
+        const scrollIndicator = document.getElementById('scrollIndicator');
+        
+        // Show/hide indicator based on scroll position
+        window.addEventListener('scroll', function() {
+            // If user has scrolled down, hide the indicator
+            if (window.scrollY > 100) {
+                scrollIndicator.style.opacity = '0';
+                // After fade out, hide completely
+                setTimeout(() => { scrollIndicator.style.display = 'none'; }, 300);
+            } else {
+                // If user is near the top, show the indicator
+                scrollIndicator.style.display = 'flex';
+                // After ensuring it's displayed, fade it in
+                setTimeout(() => { scrollIndicator.style.opacity = '1'; }, 10);
+            }
+        });
+        
+        // Add click event to scroll down when indicator is clicked
+        scrollIndicator.addEventListener('click', function() {
+            // Scroll to the mathematical explanations section
+            document.getElementById('mathematicalExplanations').scrollIntoView({
+                behavior: 'smooth'
+            });
+        });
+        }
+
         
         // Initialize the simulation when the page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -252,21 +469,39 @@
             document.getElementById('introduceBtn').addEventListener('click', introduceContaminant);
             document.getElementById('resetBtn').addEventListener('click', initSimulation);
         }
+
+        // Set up event listeners for buttons
+        function setupEventListeners() {
+            document.getElementById('stepBtn').addEventListener('click', () => stepSimulation(1));
+            document.getElementById('step10Btn').addEventListener('click', () => stepSimulation(10));
+            document.getElementById('introduceBtn').addEventListener('click', introduceContaminant);
+            document.getElementById('resetBtn').addEventListener('click', initSimulation);
+            
+            // Add setup for scroll indicator
+            setupScrollIndicator();
+        }
+    
+// Initialize or reset the simulation
+async function initSimulation() {
+    try {
+        const response = await fetch('/api/init');
+        simulationState = await response.json();
+        updateUI();
         
-        // Initialize or reset the simulation
-        async function initSimulation() {
-            try {
-                const response = await fetch('/api/init');
-                simulationState = await response.json();
-                updateUI();
-                initChart();
-                clearMessage();
-            } catch (error) {
-                console.error('Error initializing simulation:', error);
-                showMessage('Error initializing simulation. Please check the console for details.', 'error');
-            }
+        // Destroy existing chart if it exists
+        if (simulationChart !== null) {
+            simulationChart.destroy();
+            simulationChart = null;
         }
         
+        initChart();
+        clearMessage();
+    } catch (error) {
+        console.error('Error initializing simulation:', error);
+        showMessage('Error initializing simulation. Please check the console for details.', 'error');
+    }
+}
+
         // Step the simulation forward
         async function stepSimulation(steps = 1) {
             try {
