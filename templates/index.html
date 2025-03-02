@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SCOBY Protection Simulation</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        .header {
+            text-align: center;
+            background-color: #46484F;
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        button {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            background-color: #46484F;
+            color: white;
+            cursor: pointer;
+            font-weight: bold;
+        }
+        button:hover {
+            background-color: #2a2c30;
+        }
+        select {
+            padding: 10px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+        }
+        .dashboard {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+        }
+        .state-display {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .chart-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            height: 500px;
+        }
+        .state-value {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 10px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+        }
+        .message-box {
+            background-color: #f9f9f9;
+            padding: 15px;
+            border-left: 4px solid #4a7c59;
+            margin-top: 20px;
+            font-style: italic;
+        }
+        .visual-container {
+            width: 100%;
+            height: 300px;
+            position: relative;
+            background-color: #f9edcc; /* Light yellow for tea */
+            border-radius: 0 0 100px 100px;
+            overflow: hidden;
+            margin-top: 20px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .scoby-layer {
+            position: absolute;
+            width: 100%;
+            background-color: #d4c9ab; /* SCOBY color */
+            top: 0;
+            left: 0;
+            transition: height 0.3s ease;
+        }
+        .liquid {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-color: #f9edcc;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        .microbe {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .bacteria {
+            background-color: #5cb85c; /* Green */
+        }
+        .yeast {
+            background-color: #f0ad4e; /* Yellow */
+        }
+        .mold {
+            background-color: #5bc0de; /* Blue */
+        }
+        .harmful-bacteria {
+            background-color: #d9534f; /* Red */
+        }
+        .explanation {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .explanation h3 {
+            color: #46484F;
+        }
+        .explanation ul {
+            padding-left: 20px;
+        }
+        .explanation li {
+            margin-bottom: 10px;
+        }
+        footer{
+            position: fixed;
+            padding: 16px;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            background-color: #46484F;
+            color: white;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>SCOBY Protection Simulation</h1>
+            <p>Observe how a SCOBY (Symbiotic Culture of Bacteria and Yeast) protects kombucha from contaminants.</p>
+        </div>
+        
+        <div class="controls">
+            <button id="stepBtn">Step Forward (1 Day)</button>
+            <button id="step10Btn">Step Forward (10 Days)</button>
+            <select id="contaminantSelect">
+                <option value="mold">Mold</option>
+                <option value="harmful_bacteria">Harmful Bacteria</option>
+            </select>
+            <button id="introduceBtn">Introduce Contaminant</button>
+            <button id="resetBtn">Reset Simulation</button>
+        </div>
+
+        <div id="messageBox" class="message-box" style="display: none;"></div>
+        
+        <div class="dashboard">
+            <div class="state-display">
+                <h2>Current State</h2>
+                <div class="state-value">
+                    <span>Time (days):</span>
+                    <span id="timeValue">0.0</span>
+                </div>
+                <div class="state-value">
+                    <span>SCOBY Size:</span>
+                    <span id="scobyValue">1.0</span>
+                </div>
+                <div class="state-value">
+                    <span>pH Level:</span>
+                    <span id="pHValue">4.2</span>
+                </div>
+                <div class="state-value">
+                    <span>Oxygen Level:</span>
+                    <span id="oxygenValue">1.0</span>
+                </div>
+                <div class="state-value">
+                    <span>Beneficial Bacteria:</span>
+                    <span id="bacteriaValue">1.0</span>
+                </div>
+                <div class="state-value">
+                    <span>Beneficial Yeast:</span>
+                    <span id="yeastValue">1.0</span>
+                </div>
+                <div id="contaminantsContainer"></div>
+                
+                <div class="visual-container">
+                    <div class="liquid"></div>
+                    <div id="scobyVisual" class="scoby-layer" style="height: 30px;"></div>
+                    <!-- Microbes will be dynamically added here -->
+                    <div id="microbesContainer"></div>
+                </div>
+            </div>
+            
+            <div class="chart-container">
+                <canvas id="simulationChart"></canvas>
+            </div>
+        </div>
+        
+        <div class="explanation">
+            <h3>SCOBY Protection Mechanisms</h3>
+            <ul>
+                <li><strong>Physical Barrier:</strong> The SCOBY forms a cellulose mat on the surface that physically blocks contaminants from entering the liquid.</li>
+                <li><strong>Acidic Environment:</strong> The fermentation process creates an acidic environment (low pH) that inhibits the growth of many harmful organisms.</li>
+                <li><strong>Competitive Exclusion:</strong> SCOBY bacteria and yeast consume available resources, making it difficult for contaminants to establish themselves.</li>
+                <li><strong>Antimicrobial Compounds:</strong> The fermentation produces various compounds that have antimicrobial properties.</li>
+                <li><strong>Oxygen Consumption:</strong> The SCOBY consumes oxygen, creating an anaerobic environment that inhibits aerobic contaminants like mold.</li>
+            </ul>
+        </div>
+    </div>
+    <footer>
+        Made by Adilbek Bazarkulov in 2025 
+    </footer>
+
+    <script>
+        // Initialize global variables
+        let simulationState = null;
+        let simulationChart = null;
+        
+        // Initialize the simulation when the page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            initSimulation();
+            setupEventListeners();
+        });
+        
+        // Set up event listeners for buttons
+        function setupEventListeners() {
+            document.getElementById('stepBtn').addEventListener('click', () => stepSimulation(1));
+            document.getElementById('step10Btn').addEventListener('click', () => stepSimulation(10));
+            document.getElementById('introduceBtn').addEventListener('click', introduceContaminant);
+            document.getElementById('resetBtn').addEventListener('click', initSimulation);
+        }
+        
+        // Initialize or reset the simulation
+        async function initSimulation() {
+            try {
+                const response = await fetch('/api/init');
+                simulationState = await response.json();
+                updateUI();
+                initChart();
+                clearMessage();
+            } catch (error) {
+                console.error('Error initializing simulation:', error);
+                showMessage('Error initializing simulation. Please check the console for details.', 'error');
+            }
+        }
+        
+        // Step the simulation forward
+        async function stepSimulation(steps = 1) {
+            try {
+                const response = await fetch(`/api/step?steps=${steps}`);
+                simulationState = await response.json();
+                updateUI();
+                updateChart();
+                
+                // Check if any contaminants were eliminated
+                checkContaminantStatus();
+            } catch (error) {
+                console.error('Error stepping simulation:', error);
+                showMessage('Error stepping simulation. Please check the console for details.', 'error');
+            }
+        }
+        
+        // Introduce a contaminant
+        async function introduceContaminant() {
+            try {
+                const contaminantType = document.getElementById('contaminantSelect').value;
+                const response = await fetch(`/api/introduce?type=${contaminantType}`);
+                simulationState = await response.json();
+                updateUI();
+                updateChart();
+                
+                if (simulationState.message) {
+                    showMessage(simulationState.message);
+                }
+            } catch (error) {
+                console.error('Error introducing contaminant:', error);
+                showMessage('Error introducing contaminant. Please check the console for details.', 'error');
+            }
+        }
+        
+        // Update the UI with current state
+        function updateUI() {
+            // Update text values
+            document.getElementById('timeValue').textContent = simulationState.time.toFixed(1);
+            document.getElementById('scobyValue').textContent = simulationState.scoby_size.toFixed(2);
+            document.getElementById('pHValue').textContent = simulationState.pH.toFixed(2);
+            document.getElementById('oxygenValue').textContent = simulationState.oxygen.toFixed(2);
+            document.getElementById('bacteriaValue').textContent = simulationState.bacteria.toFixed(2);
+            document.getElementById('yeastValue').textContent = simulationState.yeast.toFixed(2);
+            
+            // Update contaminants display
+            const contaminantsContainer = document.getElementById('contaminantsContainer');
+            contaminantsContainer.innerHTML = '';
+            
+            for (const [type, population] of Object.entries(simulationState.contaminants)) {
+                const div = document.createElement('div');
+                div.className = 'state-value';
+                div.innerHTML = `
+                    <span>${type.replace('_', ' ').charAt(0).toUpperCase() + type.replace('_', ' ').slice(1)}:</span>
+                    <span>${population.toFixed(2)}</span>
+                `;
+                contaminantsContainer.appendChild(div);
+            }
+            
+            // Update visual representation
+            updateVisual();
+        }
+        
+        // Update the visual jar representation
+        function updateVisual() {
+            // Update SCOBY layer
+            const scobyHeight = Math.min(150, simulationState.scoby_size * 15); // Scale for visual
+            document.getElementById('scobyVisual').style.height = `${scobyHeight}px`;
+            
+            // Update liquid color based on pH
+            const normalizedPH = (simulationState.pH - 2.5) / 2.5; // Normalize pH between 0-1
+            const liquidColor = `rgba(249, 237, 204, ${0.5 + normalizedPH * 0.5})`; // Darker for lower pH
+            document.querySelector('.liquid').style.backgroundColor = liquidColor;
+            
+            // Create/update microbes
+            const microbesContainer = document.getElementById('microbesContainer');
+            microbesContainer.innerHTML = '';
+            
+            // Function to create microbes
+            const createMicrobes = (count, type, maxY) => {
+                for (let i = 0; i < count; i++) {
+                    const microbe = document.createElement('div');
+                    microbe.className = `microbe ${type}`;
+                    const x = Math.random() * 90 + 5; // 5-95% width
+                    const y = Math.random() * maxY + scobyHeight; // Below SCOBY
+                    microbe.style.left = `${x}%`;
+                    microbe.style.top = `${y}px`;
+                    microbesContainer.appendChild(microbe);
+                }
+            };
+            
+            // Create beneficial bacteria (green)
+            const bacteriaCount = Math.min(30, Math.floor(simulationState.bacteria * 3));
+            createMicrobes(bacteriaCount, 'bacteria', 260 - scobyHeight);
+            
+            // Create beneficial yeast (yellow)
+            const yeastCount = Math.min(30, Math.floor(simulationState.yeast * 3));
+            createMicrobes(yeastCount, 'yeast', 260 - scobyHeight);
+            
+            // Create contaminants
+            for (const [type, population] of Object.entries(simulationState.contaminants)) {
+                const contaminantCount = Math.min(15, Math.floor(population * 3));
+                createMicrobes(contaminantCount, type.replace('_', '-'), 260 - scobyHeight);
+            }
+        }
+        
+        // Initialize the chart
+        function initChart() {
+            const ctx = document.getElementById('simulationChart').getContext('2d');
+            
+            // Prepare datasets
+            const datasets = [
+                {
+                    label: 'SCOBY Size',
+                    data: simulationState.history.scoby_size,
+                    borderColor: '#d4c9ab',
+                    backgroundColor: 'rgba(212, 201, 171, 0.2)',
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'pH',
+                    data: simulationState.history.pH,
+                    borderColor: '#ff6384',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'Oxygen',
+                    data: simulationState.history.oxygen,
+                    borderColor: '#36a2eb',
+                    backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                    yAxisID: 'y1'
+                },
+                {
+                    label: 'Bacteria',
+                    data: simulationState.history.bacteria,
+                    borderColor: '#5cb85c',
+                    backgroundColor: 'rgba(92, 184, 92, 0.2)',
+                    yAxisID: 'y'
+                },
+                {
+                    label: 'Yeast',
+                    data: simulationState.history.yeast,
+                    borderColor: '#f0ad4e',
+                    backgroundColor: 'rgba(240, 173, 78, 0.2)',
+                    yAxisID: 'y'
+                }
+            ];
+            
+            // Add contaminants to datasets
+            for (const [type, values] of Object.entries(simulationState.history.contaminants)) {
+                const color = type === 'mold' ? '#5bc0de' : '#d9534f';
+                const bgColor = type === 'mold' ? 'rgba(91, 192, 222, 0.2)' : 'rgba(217, 83, 79, 0.2)';
+                
+                datasets.push({
+                    label: type.replace('_', ' ').charAt(0).toUpperCase() + type.replace('_', ' ').slice(1),
+                    data: values,
+                    borderColor: color,
+                    backgroundColor: bgColor,
+                    yAxisID: 'y'
+                });
+            }
+            
+            // Create the chart
+            simulationChart = new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: simulationState.history.time.map(t => t.toFixed(1)),
+                    datasets: datasets
+                },
+                options: {
+                    responsive: true,
+                    interaction: {
+                        mode: 'index',
+                        intersect: false,
+                    },
+                    stacked: false,
+                    scales: {
+                        x: {
+                            title: {
+                                display: true,
+                                text: 'Time (days)'
+                            }
+                        },
+                        y: {
+                            type: 'linear',
+                            display: true,
+                            position: 'left',
+                            title: {
+                                display: true,
+                                text: 'Population/Size'
+                            },
+                            min: 0
+                        },
+                        y1: {
+                            type: 'linear',
+                            display: true,
+                            position: 'right',
+                            title: {
+                                display: true,
+                                text: 'pH/Oxygen'
+                            },
+                            min: 0,
+                            max: 7,
+                            grid: {
+                                drawOnChartArea: false
+                            }
+                        }
+                    },
+                    plugins: {
+                        legend: {
+                            position: 'top',
+                        },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    let label = context.dataset.label || '';
+                                    if (label) {
+                                        label += ': ';
+                                    }
+                                    if (context.parsed.y !== null) {
+                                        label += context.parsed.y.toFixed(2);
+                                    }
+                                    return label;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+        
+        // Update the chart with new data
+        function updateChart() {
+            // Update labels
+            simulationChart.data.labels = simulationState.history.time.map(t => t.toFixed(1));
+            
+            // Update existing datasets
+            simulationChart.data.datasets[0].data = simulationState.history.scoby_size;
+            simulationChart.data.datasets[1].data = simulationState.history.pH;
+            simulationChart.data.datasets[2].data = simulationState.history.oxygen;
+            simulationChart.data.datasets[3].data = simulationState.history.bacteria;
+            simulationChart.data.datasets[4].data = simulationState.history.yeast;
+            
+            // Update or add contaminant datasets
+            let datasetIndex = 5;
+            for (const [type, values] of Object.entries(simulationState.history.contaminants)) {
+                const label = type.replace('_', ' ').charAt(0).toUpperCase() + type.replace('_', ' ').slice(1);
+                const color = type === 'mold' ? '#5bc0de' : '#d9534f';
+                const bgColor = type === 'mold' ? 'rgba(91, 192, 222, 0.2)' : 'rgba(217, 83, 79, 0.2)';
+                
+                // Check if dataset already exists
+                const existingDataset = simulationChart.data.datasets.find(ds => ds.label === label);
+                
+                if (existingDataset) {
+                    existingDataset.data = values;
+                } else {
+                    // Add new dataset
+                    simulationChart.data.datasets.push({
+                        label: label,
+                        data: values,
+                        borderColor: color,
+                        backgroundColor: bgColor,
+                        yAxisID: 'y'
+                    });
+                }
+            }
+            
+            simulationChart.update();
+        }
+        
+        // Check if any contaminants were eliminated and show a message
+        function checkContaminantStatus() {
+            // Get current contaminant types
+            const currentContaminants = Object.keys(simulationState.contaminants);
+            
+            // Get all contaminant types that have appeared in history
+            const historicalContaminants = Object.keys(simulationState.history.contaminants);
+            
+            // Find eliminated contaminants
+            for (const type of historicalContaminants) {
+                // If it exists in history but not in current state and was recently present
+                const historyArray = simulationState.history.contaminants[type];
+                const wasRecentlyPresent = historyArray.slice(-20, -1).some(val => val > 0.1);
+                const isCurrentlyAbsent = !currentContaminants.includes(type);
+                
+                if (wasRecentlyPresent && isCurrentlyAbsent) {
+                    const reason = findEliminationReason();
+                    showMessage(`${type.replace('_', ' ').charAt(0).toUpperCase() + type.replace('_', ' ').slice(1)} has been eliminated due to ${reason}!`);
+                }
+            }
+        }
+        
+        // Determine the most likely reason a contaminant was eliminated
+        function findEliminationReason() {
+            if (simulationState.pH < 3.0) {
+                return "low pH (high acidity)";
+            } else if (simulationState.oxygen < 0.3) {
+                return "low oxygen levels";
+            } else if (simulationState.bacteria > 5.0 && simulationState.yeast > 5.0) {
+                return "competitive exclusion from beneficial organisms";
+            } else {
+                return "SCOBY's protective mechanisms";
+            }
+        }
+        
+        // Show a message to the user
+        function showMessage(message, type = 'info') {
+            const messageBox = document.getElementById('messageBox');
+            messageBox.textContent = message;
+            messageBox.style.display = 'block';
+            
+            if (type === 'error') {
+                messageBox.style.borderLeftColor = '#d9534f';
+            } else {
+                messageBox.style.borderLeftColor = '#4a7c59';
+            }
+            
+            // Auto-clear after 5 seconds
+            setTimeout(() => {
+                messageBox.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Clear message
+        function clearMessage() {
+            document.getElementById('messageBox').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
