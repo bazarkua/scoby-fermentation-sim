@@ -39,7 +39,7 @@ The simulation models:
 
 1. Start the Flask server:
    ```
-   python app.py
+   python app.py OR python3 app.py
    ```
 2. Open a web browser and navigate to:
    ```
