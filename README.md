@@ -59,7 +59,7 @@ The simulation models:
 The interface provides several interactive features:
 
 - **Step Forward (1 Day)**: Advances the simulation by one day
-- **Step Forward (10 Days)**: Advances the simulation by ten days
+- **Step Forward (3 Days)**: Advances the simulation by three days
 - **Introduce Contaminant**: Add mold or harmful bacteria to the system
 - **Reset Simulation**: Start over from initial conditions
 
