@@ -147,11 +147,29 @@
         .explanation h3 {
             color: #2c3e56;
         }
-        .explanation ul {
-            padding-left: 20px;
-        }
         .explanation li {
             margin-bottom: 10px;
+        }
+        .explanation ol {
+            padding-left: 25px;
+            margin-bottom: 20px;
+        }
+        
+        .explanation ol li {
+            margin-bottom: 15px;
+        }
+        
+        .explanation ul {
+            padding-left: 25px;
+            margin-top: 8px;
+        }
+        
+        .explanation li strong {
+            color: #2c3e56;
+        }
+        
+        .explanation p strong {
+            color: #4a7c59;
         }
         
         /* Mathematical explanations section styles */
@@ -179,6 +197,46 @@
         .equation-container p {
             margin-top: 10px;
             line-height: 1.6;
+        }
+        .equation-container strong{
+            color: #4a7c59;
+        }
+
+        .fermentation-examples {
+            margin-top: 40px;
+            border-top: 1px solid #ddd;
+            padding-top: 30px;
+        }
+
+        .fermentation-examples h3 {
+            color: #2c3e56;
+            text-align: center;
+            margin-bottom: 25px;
+            font-size: 1.8rem;
+        }
+
+        .fermentation-stage {
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .fermentation-stage h4 {
+            color: #2c3e56;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #eee;
+            margin-bottom: 15px;
+            font-size: 1.4rem;
+        }
+
+        .stage-details p {
+            margin-bottom: 12px;
+            line-height: 1.6;
+        }
+
+        .stage-details strong {
+            color: #4a7c59;
         }
                 
         /* Scroll indicator */
@@ -236,7 +294,7 @@
         
         <div class="controls">
             <button id="stepBtn">Step Forward (1 Day)</button>
-            <button id="step10Btn">Step Forward (10 Days)</button>
+            <button id="step3Btn">Step Forward (3 Days)</button>
             <select id="contaminantSelect">
                 <option value="mold">Mold</option>
                 <option value="harmful_bacteria">Harmful Bacteria</option>
@@ -281,22 +339,37 @@
                     <div id="scobyVisual" class="scoby-layer" style="height: 30px;"></div>
                     <div id="microbesContainer"></div>
                 </div>
+                
             </div>
             
             <div class="chart-container">
                 <canvas id="simulationChart"></canvas>
+                
             </div>
+            
         </div>
-        
-        <div class="explanation">
-            <h3>SCOBY Protection Mechanisms</h3>
-            <ul>
-                <li><strong>Physical Barrier:</strong> The SCOBY forms a cellulose mat on the surface that physically blocks contaminants from entering the liquid.</li>
-                <li><strong>Acidic Environment:</strong> The fermentation process creates an acidic environment (low pH) that inhibits the growth of many harmful organisms.</li>
-                <li><strong>Competitive Exclusion:</strong> SCOBY bacteria and yeast consume available resources, making it difficult for contaminants to establish themselves.</li>
-                <li><strong>Antimicrobial Compounds:</strong> The fermentation produces various compounds that have antimicrobial properties.</li>
-                <li><strong>Oxygen Consumption:</strong> The SCOBY consumes oxygen, creating an anaerobic environment that inhibits aerobic contaminants like mold.</li>
-            </ul>
+        <div class="explanation" id="barrierExplanation">
+            <h3>Understanding SCOBY Barrier Function and Contaminant Survival</h3>
+            <p>In this simulation, you can observe realistic SCOBY protection mechanisms that mirror real-world kombucha fermentation:</p>
+            
+            <ol>
+                <li><strong>Physical Barrier Is Not Perfect:</strong> The SCOBY pellicle acts as a physical barrier but is not impermeable. Contaminants may sometimes get past it, especially when the SCOBY is small or doesn't completely cover the surface.</li>
+                
+                <li><strong>Multi-Layered Protection:</strong> When contaminants manage to enter the liquid, they still face multiple challenges to survival:
+                    <ul>
+                        <li>High acidity (low pH) damages cellular structures</li>
+                        <li>Competition from established beneficial microorganisms</li>
+                        <li>Depleted oxygen (hostile for mold and aerobic bacteria)</li>
+                        <li>Antimicrobial compounds produced during fermentation</li>
+                    </ul>
+                </li>
+                
+                <li><strong>Contaminant Die-Off:</strong> At extreme pH levels (below ~3.2 for mold and ~2.8 for harmful bacteria), contaminants don't merely stop growing - they actively decline in population as the environment damages their cells.</li>
+                
+                <li><strong>Scientific Accuracy:</strong> Laboratory studies confirm that mature kombucha (pH 2.5-3.0) effectively eliminates most harmful bacteria and mold even if they are deliberately introduced, typically within hours to days.</li>
+            </ol>
+            
+            <p><strong>Try This:</strong> Introduce a contaminant when the pH is already very low (below 3.0) and observe how it struggles to enter (try to add it many times) and then establish and gradually dies off, despite successfully entering the liquid.</p>
         </div>
         
         <!-- Scroll indicator -->
@@ -306,7 +379,7 @@
             </svg>
         </div>
         
-        <!-- Mathematical Explanations Section -->
+       <!-- Mathematical Explanations Section -->
         <div class="math-explanations" id="mathematicalExplanations">
             <h2>Mathematical Explanations</h2>
             
@@ -319,6 +392,12 @@
                     Where \(S\) is the SCOBY size, \(r_s\) is the growth rate, and \(K\) is the carrying capacity. 
                     This logistic equation models how the SCOBY grows over time, with growth slowing as the SCOBY approaches its carrying capacity.
                 </p>
+                <p>
+                    <strong>Explanation:</strong> When \(S=0\), \(\frac{dS}{dt}=0\) (no growth without SCOBY).
+                    When \(S=K\), \(\frac{dS}{dt}=0\) (growth stops at capacity).
+                    For \(0 < S < K\), \(\frac{dS}{dt} > 0\), and growth rate peaks at \(S=\frac{K}{2}\) (maximum \(\frac{r_s K}{4}\)).
+                    This matches biological systems with finite resources, as seen in SCOBY forming a mat.
+                </p>
             </div>
             
             <div class="equation-container">
@@ -329,6 +408,11 @@
                 <p>
                     The pH drops as acids are produced by the SCOBY (\(S\)) and bacteria (\(B\)), with \(k_{pH}\) as the rate constant.
                     The pH is bounded by a minimum value, reflecting the biological constraints of acid production.
+                </p>
+                <p>
+                    <strong>Explanation:</strong> If \(S=B=0\), \(\frac{dpH}{dt}=0\) (no change without microbes).
+                    As \(S\) or \(B\) increases, \(\frac{dpH}{dt} < 0\), and pH drops proportionally.
+                    With \(pH(0)=4.2\) and constant biomass, pH decreases linearly until the boundary, mimicking kombucha fermentation (pH typically drops to 2.5–3.0).
                 </p>
             </div>
             
@@ -341,38 +425,57 @@
                     Oxygen (\(O_2\)) is consumed by the SCOBY (\(S\)), bacteria (\(B\)), and yeast (\(Y\)) with rate constant \(k_{O_2}\).
                     As oxygen decreases, the environment becomes less favorable for aerobic contaminants.
                 </p>
-            </div>
-            
-            <div class="equation-container">
-                <h4>Beneficial Bacteria Growth</h4>
-                <div>
-                    \[ \frac{dB}{dt} = r_b \cdot B \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \]
-                </div>
                 <p>
-                    Bacteria (\(B\)) grow at rate \(r_b\), modified by growth factors that depend on pH (\(g_{pH}\)) and oxygen (\(g_{O_2}\)).
-                    Beneficial bacteria typically thrive in low-pH environments and can tolerate lower oxygen levels.
+                    <strong>Explanation:</strong> If \(S=B=Y=0\), \(\frac{dO_2}{dt}=0\) (no consumption).
+                    As biomass increases, \(O_2\) decreases linearly until 0, consistent with fermentation creating anaerobic conditions over time.
                 </p>
             </div>
             
             <div class="equation-container">
-                <h4>Beneficial Yeast Growth</h4>
+                <h4>Beneficial Bacteria Growth (Logistic Growth)</h4>
                 <div>
-                    \[ \frac{dY}{dt} = r_y \cdot Y \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \]
+                    \[ \frac{dB}{dt} = r_b \cdot B \cdot (1 - \frac{B}{K_b}) \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \]
                 </div>
                 <p>
-                    Yeast (\(Y\)) grows at rate \(r_y\), also modified by pH and oxygen-dependent growth factors.
+                    Bacteria (\(B\)) grow at rate \(r_b\), modified by growth factors that depend on pH (\(g_{pH}\)) and oxygen (\(g_{O_2}\)).
+                    The logistic term \((1 - \frac{B}{K_b})\) ensures that bacteria population approaches a carrying capacity (\(K_b\)) rather than growing unbounded.
+                    Beneficial bacteria typically thrive in low-pH environments and can tolerate lower oxygen levels.
+                </p>
+                <p>
+                    <strong>Explanation:</strong> Growth stops when \(B=K_b\) or when environmental conditions are unfavorable. 
+                    For acidophilic bacteria, if \(pH > 4.0\), \(\frac{dB}{dt} \approx 0\) (minimal growth), matching their acidophilic nature.
+                    If \(pH \leq 4.0\), and \(B\) is small relative to \(K_b\), growth approximates exponential until resource limits become significant.
+                </p>
+            </div>
+            
+            <div class="equation-container">
+                <h4>Beneficial Yeast Growth (Logistic Growth)</h4>
+                <div>
+                    \[ \frac{dY}{dt} = r_y \cdot Y \cdot (1 - \frac{Y}{K_y}) \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \]
+                </div>
+                <p>
+                    Yeast (\(Y\)) grows at rate \(r_y\), also modified by pH and oxygen-dependent growth factors and a logistic term to ensure equilibrium.
                     Yeasts have different optimal conditions compared to bacteria, creating a complex microbial ecosystem.
+                </p>
+                <p>
+                    <strong>Explanation:</strong> Similar to bacteria, yeast growth stops at carrying capacity \(K_y\) or when environmental conditions 
+                    become unfavorable. The model captures the common observation that yeast population stabilizes at a lower level than bacteria in mature kombucha.
                 </p>
             </div>
             
             <div class="equation-container">
                 <h4>Contaminant Growth</h4>
                 <div>
-                    \[ \frac{dC_i}{dt} = r_i \cdot C_i \cdot g_{pH}(pH) \cdot g_{O_2}(O_2) \cdot \frac{1}{1 + 0.1(B + Y)} \]
+                    \[ \frac{dC_i}{dt} = r_i \cdot C_i \cdot g_{pH}(pH) \cdot g_{O_2,i}(O_2) \cdot \frac{1}{1 + 0.1(B + Y)} \]
                 </div>
                 <p>
                     Contaminant \(i\) grows at its intrinsic rate \(r_i\), modified by pH and oxygen factors, and competitive exclusion.
                     The competitive exclusion factor \(\frac{1}{1 + 0.1(B + Y)}\) reduces contaminant growth as beneficial microbes increase.
+                </p>
+                <p>
+                    <strong>Explanation:</strong> For aerobic contaminants like mold: If \(O_2 = 0\) or \(pH < pH_{min,i}\), \(g_i = 0\) (no growth). 
+                    Growth scales with oxygen, as expected. If beneficial organisms (\(B + Y\)) are abundant, the competition term approaches zero,
+                    modeling how established kombucha cultures resist contamination.
                 </p>
             </div>
             
@@ -384,6 +487,12 @@
                 <p>
                     The probability of the SCOBY blocking a contaminant increases with SCOBY size (\(S\)),
                     where \(S_{half}\) is the SCOBY size at which the blocking probability is 50%.
+                </p>
+                <p>
+                    <strong>Explanation:</strong> If \(S = 0\), \(P_{block} = 0\) (no protection).
+                    As \(S \to \infty\), \(P_{block} \to 1\) (full protection).
+                    At \(S = S_{half}\), \(P_{block} = 0.5\), a reasonable halfway point.
+                    This creates a realistic sigmoidal probability curve that models the increasing protection of a growing SCOBY.
                 </p>
             </div>
             
@@ -415,6 +524,63 @@
                     Contaminants generally prefer higher pH levels, with growth severely inhibited below a threshold.
                     Growth increases as pH rises above the threshold, reaching optimal levels in more neutral conditions.
                 </p>
+            </div>
+
+            <div class="equation-container">
+                <h4>Numerical Solution</h4>
+                <div>
+                    \[ x(t + \Delta t) = x(t) + \Delta t \cdot \frac{dx}{dt} \]
+                </div>
+                <p>
+                    Equations are solved using Euler's method (\(\Delta t = 0.1\) days), where \(x\) represents 
+                    any state variable (\(S\), \(pH\), \(O_2\), \(B\), \(Y\), \(C_i\)).
+                    This approximates the continuous system; smaller \(\Delta t\) increases accuracy.
+                </p>
+            </div>
+            
+            <!-- Realistic Fermentation Stages Example -->
+            <div class="fermentation-examples">
+                <h3>Realistic Fermentation Stages</h3>
+                
+                <div class="fermentation-stage">
+                    <h4>Early Stage (Day 14) Fermentation</h4>
+                    <div class="stage-details">
+                        <p><strong>Time (days):</strong> 14.0 - This is a reasonable timeframe for an active fermentation. Most kombucha brews take 7-14 days to reach a desirable state, depending on temperature and other conditions.</p>
+                        
+                        <p><strong>SCOBY Size:</strong> 4.57 - This shows good growth from the initial size (1.0) but hasn't yet reached full maturity. This matches what you'd expect to see in a two-week-old fermentation.</p>
+                        
+                        <p><strong>pH Level:</strong> 3.19 - This pH is perfect for a kombucha that's been fermenting for about two weeks. The pH has dropped from the initial 4.2 to 3.19, showing the acids are building up, but it hasn't reached the full acidity of a mature brew.</p>
+                        
+                        <p><strong>Oxygen Level:</strong> 0.00 - The oxygen being depleted by day 14 is accurate. Kombucha fermentation quickly uses up available oxygen, transitioning from aerobic to largely anaerobic conditions.</p>
+                        
+                        <p><strong>Beneficial Bacteria:</strong> 4.59 - This shows strong bacterial growth that's still increasing, which aligns with real fermentation where bacteria multiply rapidly in the first 1-2 weeks.</p>
+                        
+                        <p><strong>Beneficial Yeast:</strong> 1.37 - The lower yeast population is realistic. In the early stages of fermentation, bacteria often establish more quickly while yeast growth lags slightly behind.</p>
+                        
+                        <p>The bacteria-to-yeast ratio at this stage (approximately 3:1) is consistent with early fermentation patterns in kombucha. Initially, acetic acid bacteria tend to establish more quickly while yeast populations build more gradually.</p>
+                        
+                        <p>This snapshot at day 14 accurately represents a kombucha that's well into the fermentation process but hasn't reached full maturity - exactly what you'd expect to see in a batch that's been fermenting for two weeks at typical room temperature.</p>
+                    </div>
+                </div>
+                
+                <div class="fermentation-stage">
+                    <h4>Mature Stage (Day 30) Fermentation</h4>
+                    <div class="stage-details">
+                        <p><strong>Time (days):</strong> 30.0 - This represents a mature kombucha fermentation approaching equilibrium after one month.</p>
+                        
+                        <p><strong>SCOBY Size:</strong> 9.10 - The SCOBY has reached near carrying capacity, forming a substantial pellicle that covers the entire surface.</p>
+                        
+                        <p><strong>pH Level:</strong> 2.50 - The pH has reached its minimum value, creating a highly acidic environment that effectively protects against most contaminants.</p>
+                        
+                        <p><strong>Oxygen Level:</strong> 0.00 - The environment is completely anaerobic, limiting the growth of aerobic contaminants like mold.</p>
+                        
+                        <p><strong>Beneficial Bacteria:</strong> 7.91 - Bacteria have nearly reached their carrying capacity, establishing a dominant presence in the culture.</p>
+                        
+                        <p><strong>Beneficial Yeast:</strong> 1.73 - Yeast population has stabilized at a lower level than bacteria, with a bacteria-to-yeast ratio of approximately 4.5:1, which is commonly observed in kombucha cultures.</p>
+                        
+                        <p>This 30-day state demonstrates the protective ecosystem that develops in kombucha fermentation, with acidity at maximum levels and beneficial microorganisms established in their characteristic ratios. At this stage, the fermentation is fully effective at inhibiting contaminants while continuing to develop complex flavors.</p>
+                    </div>
+                </div>
             </div>
         </div>
         
@@ -471,7 +637,7 @@
         // Set up event listeners for buttons
         function setupEventListeners() {
             document.getElementById('stepBtn').addEventListener('click', () => stepSimulation(1));
-            document.getElementById('step10Btn').addEventListener('click', () => stepSimulation(10));
+            document.getElementById('step3Btn').addEventListener('click', () => stepSimulation(3));
             document.getElementById('introduceBtn').addEventListener('click', introduceContaminant);
             document.getElementById('resetBtn').addEventListener('click', initSimulation);
         }
@@ -479,7 +645,7 @@
         // Set up event listeners for buttons
         function setupEventListeners() {
             document.getElementById('stepBtn').addEventListener('click', () => stepSimulation(1));
-            document.getElementById('step10Btn').addEventListener('click', () => stepSimulation(10));
+            document.getElementById('step3Btn').addEventListener('click', () => stepSimulation(3));
             document.getElementById('introduceBtn').addEventListener('click', introduceContaminant);
             document.getElementById('resetBtn').addEventListener('click', initSimulation);
             

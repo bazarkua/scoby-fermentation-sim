@@ -17,38 +17,42 @@ class KombuchaSimulation:
         self.contaminants = {} # Dictionary to store contaminant populations
         
         # Constants for differential equations
-        self.dt = 0.1          # Time step for simulation
+        self.dt = 1.0          # Time step for simulation
         
         # SCOBY growth parameters
-        self.r_scoby = 0.3     # SCOBY growth rate
+        self.r_scoby = 0.15     # SCOBY growth rate
         self.K_scoby = 10.0    # SCOBY carrying capacity
         
         # pH parameters
-        self.k_pH = 0.05       # Rate of pH decrease
+        self.k_pH = 0.015       # Rate of pH decrease
         self.min_pH = 2.5      # Minimum possible pH
         
         # Oxygen parameters
         self.k_oxygen = 0.1    # Rate of oxygen consumption
         
         # Bacteria parameters
-        self.r_bacteria = 0.4  # Bacteria growth rate
+        self.r_bacteria = 0.3  # Bacteria growth rate
+        self.K_bacteria = 8.0  # Bacteria carrying capacity
         
         # Yeast parameters
-        self.r_yeast = 0.3     # Yeast growth rate
+        self.r_yeast = 0.2     # Yeast growth rate
+        self.K_yeast = 6.0     # Yeast carrying capacity
         
         # Contaminant parameters
         self.contaminant_types = {
             "mold": {
                 "growth_rate": 0.5,
-                "pH_threshold": 3.5,    # Prefers pH above this
-                "oxygen_threshold": 0.4, # Prefers oxygen above this
-                "is_aerobic": True
+                "pH_threshold": 3.8,     # Most molds struggle below pH 3.8
+                "oxygen_threshold": 0.4,  # Molds need significant oxygen
+                "is_aerobic": True,
+                "death_threshold_pH": 3.2 # pH below which mold starts dying
             },
             "harmful_bacteria": {
                 "growth_rate": 0.3,
-                "pH_threshold": 3.0,     # More acid-tolerant than mold
-                "oxygen_threshold": 0.2,  # Can survive in lower oxygen
-                "is_aerobic": False
+                "pH_threshold": 3.2,      # More acid-tolerant than mold but still limited
+                "oxygen_threshold": 0.2,   # Can survive in lower oxygen
+                "is_aerobic": False,
+                "death_threshold_pH": 2.8  # pH below which harmful bacteria start dying
             }
         }
         
@@ -89,13 +93,23 @@ class KombuchaSimulation:
         """
         Growth factor based on pH.
         Beneficial organisms thrive in lower pH, contaminants prefer higher pH.
+        When pH is extremely unfavorable, returns negative values to model population decline.
         """
         if is_beneficial:
             # Beneficial organisms prefer lower pH
-            return 1.0 if pH <= threshold else max(0.2, 1.0 - 0.3 * (pH - threshold))
+            if pH <= threshold:
+                return 1.0
+            else:
+                return max(0.2, 1.0 - 0.3 * (pH - threshold))
         else:
             # Contaminants prefer higher pH
-            return 0.2 if pH <= threshold else min(1.0, 0.2 + 0.8 * (pH - threshold) / (7.0 - threshold))
+            if pH <= threshold - 0.5:  # Well below threshold - actively harmful
+                return -0.2  # Negative growth factor indicates population decline
+            elif pH <= threshold:      # Below threshold but not severely
+                return 0.1   # Minimal but not negative growth
+            else:
+                # Above threshold - favorable conditions
+                return min(1.0, 0.2 + 0.8 * (pH - threshold) / (7.0 - threshold))
     
     def g_oxygen(self, oxygen, threshold, is_aerobic):
         """
@@ -161,30 +175,49 @@ class KombuchaSimulation:
             doxygen = -self.k_oxygen * (self.scoby_size + self.bacteria + self.yeast) * self.dt
             self.oxygen = max(0.0, self.oxygen + doxygen)
             
-            # Update beneficial bacteria
-            dbacteria = self.r_bacteria * self.bacteria * bacteria_g_pH * bacteria_g_oxygen * self.dt
+            # Update beneficial bacteria (now using logistic growth)
+            dbacteria = self.r_bacteria * self.bacteria * (1 - self.bacteria / self.K_bacteria) * bacteria_g_pH * bacteria_g_oxygen * self.dt
             self.bacteria += dbacteria
             
-            # Update beneficial yeast
-            dyeast = self.r_yeast * self.yeast * yeast_g_pH * yeast_g_oxygen * self.dt
+            # Update beneficial yeast (now using logistic growth)
+            dyeast = self.r_yeast * self.yeast * (1 - self.yeast / self.K_yeast) * yeast_g_pH * yeast_g_oxygen * self.dt
             self.yeast += dyeast
             
-            # Update contaminants
+            # Update contaminants with realistic decline in unfavorable conditions
             to_remove = []
             for contaminant_type, population in self.contaminants.items():
                 params = self.contaminant_types[contaminant_type]
                 
                 # Calculate growth factors
-                g_pH_val = self.g_pH(self.pH, params["pH_threshold"], is_beneficial=False)
-                g_oxygen_val = self.g_oxygen(self.oxygen, params["oxygen_threshold"], params["is_aerobic"])
+                pH_factor = self.g_pH(self.pH, params["pH_threshold"], is_beneficial=False)
+                oxygen_factor = self.g_oxygen(self.oxygen, params["oxygen_threshold"], params["is_aerobic"])
                 
                 # Competitive exclusion effect (simplified)
                 competition_factor = 1.0 / (1.0 + 0.1 * (self.bacteria + self.yeast))
                 
-                # Update population
-                growth_rate = params["growth_rate"] * g_pH_val * g_oxygen_val * competition_factor
-                dpop = growth_rate * population * self.dt
-                population += dpop
+                # Determine if conditions are highly unfavorable
+                highly_unfavorable = False
+                
+                # For mold: highly unfavorable if pH is very low OR oxygen is depleted
+                if contaminant_type == "mold":
+                    if self.pH < (params["pH_threshold"] - 0.5) or (params["is_aerobic"] and self.oxygen < 0.1):
+                        highly_unfavorable = True
+                
+                # For harmful bacteria: highly unfavorable if pH is very low
+                elif contaminant_type == "harmful_bacteria":
+                    if self.pH < (params["pH_threshold"] - 0.3):
+                        highly_unfavorable = True
+                
+                # Update population with realistic decline in unfavorable conditions
+                if highly_unfavorable:
+                    # Apply a negative growth rate (population decline) when conditions are highly unfavorable
+                    decline_rate = -0.05 * population  # Organisms die off at a rate proportional to population
+                    population += decline_rate * self.dt
+                else:
+                    # Normal growth calculation when conditions aren't highly unfavorable
+                    growth_rate = params["growth_rate"] * pH_factor * oxygen_factor * competition_factor
+                    dpop = growth_rate * population * self.dt
+                    population += dpop
                 
                 # Check if population is too small (effectively extinct)
                 if population < 0.01:
