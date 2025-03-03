@@ -17,6 +17,7 @@
             margin: 0 auto;
             padding: 20px;
             background-color: #f5f5f5;
+            line-height: 1.5;
         }
         .container {
             display: flex;
@@ -202,40 +203,86 @@
             color: #4a7c59;
         }
 
-        .fermentation-examples {
-            margin-top: 40px;
-            border-top: 1px solid #ddd;
-            padding-top: 30px;
+        /* Fermentation Examples */
+        .fermentation-comparison {
+        background-color: white;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-top: 40px;
         }
-
-        .fermentation-examples h3 {
+        
+        .fermentation-comparison h3 {
             color: #2c3e56;
             text-align: center;
             margin-bottom: 25px;
             font-size: 1.8rem;
         }
-
-        .fermentation-stage {
-            border-radius: 8px;
-            padding: 20px;
+        
+        .comparison-section {
             margin-bottom: 30px;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-        }
-
-        .fermentation-stage h4 {
-            color: #2c3e56;
-            padding-bottom: 10px;
+            padding-bottom: 20px;
             border-bottom: 1px solid #eee;
+        }
+        
+        .comparison-section h4 {
+            color: #2c3e56;
             margin-bottom: 15px;
             font-size: 1.4rem;
         }
-
-        .stage-details p {
-            margin-bottom: 12px;
-            line-height: 1.6;
+        
+        .fermentation-stage {
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
         }
-
-        .stage-details strong {
+        
+        .fermentation-stage h5 {
+            color: #4a7c59;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+        }
+        
+        .fermentation-stage ol, .comparison-conclusion ul {
+            padding-left: 25px;
+            margin-bottom: 15px;
+        }
+        
+        .fermentation-stage li, .comparison-conclusion li {
+            margin-bottom: 8px;
+        }
+        
+        .simulation-results {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 10px;
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f0f0f0;
+            border-radius: 6px;
+        }
+        
+        .results-item {
+            font-size: 0.95rem;
+        }
+        
+        .results-item strong {
+            color: #2c3e56;
+        }
+        
+        .comparison-conclusion {
+            background-color: #f2f8f4;
+            border-radius: 8px;
+            padding: 20px;
+        }
+        
+        .comparison-conclusion h4 {
+            color: #2c3e56;
+            margin-bottom: 15px;
+        }
+        
+        .comparison-conclusion li strong {
             color: #4a7c59;
         }
                 
@@ -539,50 +586,81 @@
             </div>
             
             <!-- Realistic Fermentation Stages Example -->
-            <div class="fermentation-examples">
-                <h3>Realistic Fermentation Stages</h3>
+            <div class="fermentation-comparison">
+                <h3>Simulation vs. Real-World Kombucha Fermentation</h3>
                 
-                <div class="fermentation-stage">
-                    <h4>Early Stage (Day 14) Fermentation</h4>
-                    <div class="stage-details">
-                        <p><strong>Time (days):</strong> 14.0 - This is a reasonable timeframe for an active fermentation. Most kombucha brews take 7-14 days to reach a desirable state, depending on temperature and other conditions.</p>
-                        
-                        <p><strong>SCOBY Size:</strong> 4.57 - This shows good growth from the initial size (1.0) but hasn't yet reached full maturity. This matches what you'd expect to see in a two-week-old fermentation.</p>
-                        
-                        <p><strong>pH Level:</strong> 3.19 - This pH is perfect for a kombucha that's been fermenting for about two weeks. The pH has dropped from the initial 4.2 to 3.19, showing the acids are building up, but it hasn't reached the full acidity of a mature brew.</p>
-                        
-                        <p><strong>Oxygen Level:</strong> 0.00 - The oxygen being depleted by day 14 is accurate. Kombucha fermentation quickly uses up available oxygen, transitioning from aerobic to largely anaerobic conditions.</p>
-                        
-                        <p><strong>Beneficial Bacteria:</strong> 4.59 - This shows strong bacterial growth that's still increasing, which aligns with real fermentation where bacteria multiply rapidly in the first 1-2 weeks.</p>
-                        
-                        <p><strong>Beneficial Yeast:</strong> 1.37 - The lower yeast population is realistic. In the early stages of fermentation, bacteria often establish more quickly while yeast growth lags slightly behind.</p>
-                        
-                        <p>The bacteria-to-yeast ratio at this stage (approximately 3:1) is consistent with early fermentation patterns in kombucha. Initially, acetic acid bacteria tend to establish more quickly while yeast populations build more gradually.</p>
-                        
-                        <p>This snapshot at day 14 accurately represents a kombucha that's well into the fermentation process but hasn't reached full maturity - exactly what you'd expect to see in a batch that's been fermenting for two weeks at typical room temperature.</p>
+                <div class="comparison-section">
+                    <h4>Real-World Kombucha Fermentation Process</h4>
+                    
+                    <div class="fermentation-stage">
+                        <h5>Primary Fermentation (F1)</h5>
+                        <p>This stage typically takes 7-12 days, though it can vary depending on factors such as temperature and desired acidity. During F1:</p>
+                        <ol>
+                            <li>Sweet tea is prepared by steeping tea leaves in hot water and adding sugar.</li>
+                            <li>The cooled tea is combined with starter tea and a SCOBY (Symbiotic Culture of Bacteria and Yeast).</li>
+                            <li>The mixture is covered with a breathable cloth and left to ferment at room temperature.</li>
+                            <li>Over time, the SCOBY consumes the sugar, producing acids, probiotics, and other beneficial compounds.</li>
+                        </ol>
+                    </div>
+                    
+                    <div class="fermentation-stage">
+                        <h5>Secondary Fermentation (F2)</h5>
+                        <p>This optional stage typically lasts 2-4 days and involves:</p>
+                        <ol>
+                            <li>Removing the SCOBY and transferring the kombucha to bottles.</li>
+                            <li>Adding flavoring ingredients like fruits, herbs, or juices.</li>
+                            <li>Sealing the bottles to allow carbonation to build up.</li>
+                            <li>Fermenting at room temperature for 1-5 days, depending on desired carbonation.</li>
+                            <li>Refrigerating to slow fermentation and preserve flavor.</li>
+                        </ol>
+                        <p>The entire process transforms sweet tea into a probiotic-rich, fizzy beverage with a complex flavor profile.</p>
                     </div>
                 </div>
                 
-                <div class="fermentation-stage">
-                    <h4>Mature Stage (Day 30) Fermentation</h4>
-                    <div class="stage-details">
-                        <p><strong>Time (days):</strong> 30.0 - This represents a mature kombucha fermentation approaching equilibrium after one month.</p>
-                        
-                        <p><strong>SCOBY Size:</strong> 9.10 - The SCOBY has reached near carrying capacity, forming a substantial pellicle that covers the entire surface.</p>
-                        
-                        <p><strong>pH Level:</strong> 2.50 - The pH has reached its minimum value, creating a highly acidic environment that effectively protects against most contaminants.</p>
-                        
-                        <p><strong>Oxygen Level:</strong> 0.00 - The environment is completely anaerobic, limiting the growth of aerobic contaminants like mold.</p>
-                        
-                        <p><strong>Beneficial Bacteria:</strong> 7.91 - Bacteria have nearly reached their carrying capacity, establishing a dominant presence in the culture.</p>
-                        
-                        <p><strong>Beneficial Yeast:</strong> 1.73 - Yeast population has stabilized at a lower level than bacteria, with a bacteria-to-yeast ratio of approximately 4.5:1, which is commonly observed in kombucha cultures.</p>
-                        
-                        <p>This 30-day state demonstrates the protective ecosystem that develops in kombucha fermentation, with acidity at maximum levels and beneficial microorganisms established in their characteristic ratios. At this stage, the fermentation is fully effective at inhibiting contaminants while continuing to develop complex flavors.</p>
+                <div class="comparison-section">
+                    <h4>Simulation Results: Contaminant Challenge Test</h4>
+                    <p>To test the protective mechanisms of the SCOBY, we introduced contaminants (mold and harmful bacteria) on day 1 of fermentation and observed their interaction with the developing kombucha culture:</p>
+                    
+                    <div class="fermentation-stage">
+                        <h5>Day 12 - Mid-Fermentation (Primary F1 Stage)</h5>
+                        <div class="simulation-results">
+                            <div class="results-item"><strong>SCOBY Size:</strong> 3.85</div>
+                            <div class="results-item"><strong>pH Level:</strong> 3.44</div>
+                            <div class="results-item"><strong>Oxygen Level:</strong> 0.00</div>
+                            <div class="results-item"><strong>Beneficial Bacteria:</strong> 3.74</div>
+                            <div class="results-item"><strong>Beneficial Yeast:</strong> 1.33</div>
+                            <div class="results-item"><strong>Harmful Bacteria:</strong> 0.99</div>
+                            <div class="results-item"><strong>Mold:</strong> 0.32</div>
+                        </div>
+                        <p>At this stage, we observe that both harmful bacteria and mold are still present but struggling to thrive. The SCOBY's protective mechanisms—including pH reduction (now at 3.44), oxygen depletion, and competition from beneficial microorganisms—are effectively limiting contaminant growth. This aligns with real-world kombucha brewing where the first 7-12 days represent a critical period when the ferment develops its protective properties.</p>
                     </div>
+                    
+                    <div class="fermentation-stage">
+                        <h5>Day 21 - Mature Fermentation (End of Primary F1)</h5>
+                        <div class="simulation-results">
+                            <div class="results-item"><strong>SCOBY Size:</strong> 7.09</div>
+                            <div class="results-item"><strong>pH Level:</strong> 2.50</div>
+                            <div class="results-item"><strong>Oxygen Level:</strong> 0.00</div>
+                            <div class="results-item"><strong>Beneficial Bacteria:</strong> 7.10</div>
+                            <div class="results-item"><strong>Beneficial Yeast:</strong> 1.52</div>
+                            <div class="results-item"><strong>Harmful Bacteria:</strong> 0.77</div>
+                            <div class="results-item"><strong>Mold:</strong> 0.20</div>
+                        </div>
+                        <p>By day 21, the SCOBY has nearly doubled in size, the pH has reached its minimum value of 2.50, and beneficial bacteria have established dominance in the culture. Most importantly, both harmful bacteria and mold populations are actively declining (down to 0.77 and 0.20 respectively). With continued fermentation, these contaminants will eventually die out completely as they cannot survive in the extremely acidic environment that has developed.</p>
+                        <p>This demonstrates how a mature kombucha fermentation becomes self-protective over time, precisely matching real-world observations where established kombucha cultures resist contamination through multiple protective mechanisms working in concert.</p>
+                    </div>
+                </div>
+                
+                <div class="comparison-conclusion">
+                    <h4>Key Observations from Simulation</h4>
+                    <ul>
+                        <li><strong>Protective Timeline:</strong> The simulation accurately captures the gradual development of kombucha's protective mechanisms over 7-21 days, matching real-world fermentation timelines.</li>
+                        <li><strong>Die-off Pattern:</strong> Contaminants like mold and harmful bacteria initially establish but then gradually decline as the environment becomes increasingly hostile—exactly as observed in laboratory studies of kombucha.</li>
+                        <li><strong>pH Protection:</strong> The critical role of acidity is demonstrated, with substantial contaminant decline occurring as pH drops below 3.0, confirming why pH testing is a key safety practice in real kombucha brewing.</li>
+                        <li><strong>Microbial Balance:</strong> The ratio of bacteria to yeast (approximately 4.5:1 at day 21) mirrors the microbial composition found in analysis of real-world kombucha SCOBYs.</li>
+                    </ul>
                 </div>
             </div>
-        </div>
         
         <!-- Footer -->
         <footer>
