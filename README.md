@@ -3,7 +3,7 @@
 This project provides an interactive simulation that demonstrates how a SCOBY (Symbiotic Culture of Bacteria and Yeast) protects kombucha during the fermentation process through various mechanisms.
 
 
-![Simulation Demo GIF](images/sim-demo.gif)
+![Simulation Demo GIF](images/scoby-demo.gif)
 
 
 ## Overview
