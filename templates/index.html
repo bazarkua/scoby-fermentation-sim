@@ -75,7 +75,7 @@
             padding: 20px;
             border-radius: 8px;
             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            height: 500px;
+            height: 700px;
         }
         .state-value {
             display: flex;
@@ -93,7 +93,7 @@
         }
         .visual-container {
             width: 100%;
-            height: 300px;
+            height: 380px;
             position: relative;
             background-color: #f9edcc; /* Light yellow for tea */
             border-radius: 0 0 100px 100px;
@@ -626,7 +626,6 @@
             });
         });
         }
-
         
         // Initialize the simulation when the page loads
         document.addEventListener('DOMContentLoaded', function() {
@@ -653,26 +652,26 @@
             setupScrollIndicator();
         }
     
-// Initialize or reset the simulation
-async function initSimulation() {
-    try {
-        const response = await fetch('/api/init');
-        simulationState = await response.json();
-        updateUI();
-        
-        // Destroy existing chart if it exists
-        if (simulationChart !== null) {
-            simulationChart.destroy();
-            simulationChart = null;
+        // Initialize or reset the simulation
+        async function initSimulation() {
+            try {
+                const response = await fetch('/api/init');
+                simulationState = await response.json();
+                updateUI();
+                
+                // Destroy existing chart if it exists
+                if (simulationChart !== null) {
+                    simulationChart.destroy();
+                    simulationChart = null;
+                }
+                
+                initChart();
+                clearMessage();
+            } catch (error) {
+                console.error('Error initializing simulation:', error);
+                showMessage('Error initializing simulation. Please check the console for details.', 'error');
+            }
         }
-        
-        initChart();
-        clearMessage();
-    } catch (error) {
-        console.error('Error initializing simulation:', error);
-        showMessage('Error initializing simulation. Please check the console for details.', 'error');
-    }
-}
 
         // Step the simulation forward
         async function stepSimulation(steps = 1) {
@@ -845,6 +844,7 @@ async function initSimulation() {
                 },
                 options: {
                     responsive: true,
+                    maintainAspectRatio: false, 
                     interaction: {
                         mode: 'index',
                         intersect: false,
